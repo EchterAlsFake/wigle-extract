@@ -18,9 +18,9 @@ class Configure():
         self.get_language()
 
         if self.language == "Deutsch":
-            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Konfiguration abgeschlossen!")
+            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTYELLOW_EX + "Konfiguration abgeschlossen!")
         elif self.language == "English":
-            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Configuration successful!")
+            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTYELLOW_EX + "Configuration successful!")
 
     def get_language(self):
 
@@ -29,7 +29,7 @@ class Configure():
 
         elif self.conf['Language']['german'] == 'true':
             self.language = "Deutsch"
-            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTMAGENTA_EX + "Sprache: Deutsch")
+            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTBLUE_EX + "Sprache: Deutsch")
             self.configure_german()
 
         elif self.conf['Language']['english'] == 'true':
@@ -69,7 +69,7 @@ Please select your language:
         if self.conf['AGB']['accept'] == 'false':
             self.agb_german()
 
-        self.file = input(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTCYAN_EX + "Bitte gib den Pfad zur CSV Datei ein: ")
+        self.file = input(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Bitte gib den Pfad zur CSV Datei ein: ")
         self.date = datetime.datetime.now()
 
     def configure_english(self):
@@ -141,22 +141,18 @@ I have read and do not agree to the terms.
         if self.conf['WPS']['tp_link'] == 'true':
             self.wps_tp_link = True
             self.wps_tp_link_ext = Fore.LIGHTGREEN_EX + "Enabled"
-            print(self.wps_tp_link_ext)
 
         elif self.conf['WPS']['tp_link'] == 'false':
             self.wps_tp_link = False
             self.wps_tp_link_ext = Fore.LIGHTRED_EX + "Disabled"
-            print(self.wps_tp_link_ext)
 
         if self.conf['WPS']['o2'] == 'true':
             self.wps_o2 = True
             self.wps_o2_ext = Fore.LIGHTGREEN_EX + "Enabled"
-            print(self.wps_o2_ext)
 
         elif self.conf['WPS']['o2'] == 'false':
             self.wps_o2 = False
             self.wps_o2_ext = Fore.LIGHTRED_EX + "Disabled"
-            print(self.wps_o2_ext)
 
         if self.conf['WPA']['tkip'] == 'true':
             self.wpa = True
@@ -461,8 +457,298 @@ knacken.
         self.showing_input()
 
 
-class Wigle_English():
-    pass
+class Wigle_English(Configure):
+    def __init__(self):
+        super().__init__()
+        self.wep_list = []
+        self.wpa_list = []
+        self.tp_link_list = []
+        self.o2_list = []
+        self.menu()
+
+    def menu(self):
+
+        menu_input = input(f"""
+
+    {Fore.LIGHTCYAN_EX}1) Security analysis
+    {Fore.LIGHTGREEN_EX}2) Settings
+    {Fore.LIGHTMAGENTA_EX}3) Exit        
+    {Fore.LIGHTRED_EX}------------------------------=>""")
+
+        if menu_input == "1":
+            self.vulnerability_search()
+            self.get_results()
+            self.show_results()
+
+        elif menu_input == "2":
+            self.settings()
+
+        elif menu_input == "3":
+            exit()
+
+    def settings(self):
+
+        setting = input(f"""
+
+            {Fore.LIGHTYELLOW_EX}1) Enable / Disable - Showing WEP Networks.         {Fore.LIGHTWHITE_EX}Currently: {self.wep_ext}
+            {Fore.LIGHTMAGENTA_EX}2) Enable / Disable - Showing WPA Networks..         {Fore.LIGHTWHITE_EX}Currently: {self.wps_tp_link_ext}
+            {Fore.LIGHTCYAN_EX}3  Enable / Disable - Showing o2 Networks.         {Fore.LIGHTWHITE_EX}Currently: {self.wps_o2_ext}
+            {Fore.LIGHTGREEN_EX}4) Enable / Disable - Showing TP-Link Networks.     {Fore.LIGHTWHITE_EX}Currently: {self.wps_tp_link_ext}
+            {Fore.LIGHTRED_EX}5) Change Language - German or English.                          {Fore.LIGHTWHITE_EX}Currently: {self.language}
+            ----------------------------------------------------------------=>""")
+
+        with open("config.ini", 'w') as ConfigFile:
+            if setting == "1":
+
+                if self.wep:
+                    self.conf.set("WEP", 'wep', 'false')
+                    self.conf.write(ConfigFile)
+
+                elif not self.wep:
+                    self.conf.set("WEP", 'wep', 'true')
+                    self.conf.write(ConfigFile)
+
+            elif setting == "2":
+
+                if self.wpa:
+                    self.conf.set("WPA", 'tkip', 'false')
+                    self.conf.write(ConfigFile)
+
+                elif not self.wpa:
+                    self.conf.set("WPA", 'tkip', 'true')
+                    self.conf.write(ConfigFile)
+
+            elif setting == "3":
+
+                if self.wps_o2:
+                    self.conf.set("WPS", 'o2', 'false')
+                    self.conf.write(ConfigFile)
+
+                elif not self.wps_o2:
+                    self.conf.set("WPS", 'o2', 'true')
+                    self.conf.write(ConfigFile)
+
+            elif setting == "4":
+
+                if self.wps_tp_link:
+                    self.conf.set("WPS", 'tp_link', 'false')
+                    self.conf.write(ConfigFile)
+
+                elif not self.wps_tp_link:
+                    self.conf.set("WPS", 'tp_link', 'true')
+                    self.conf.write(ConfigFile)
+
+            elif setting == "5":
+
+                if self.language == "Deutsch":
+
+                    self.conf.set("Language", 'german', 'false')
+                    self.conf.set("Language", 'english', 'true')
+                    self.conf.write(ConfigFile)
+
+                elif self.language == "English":
+
+                    self.conf.set("Language", 'german', 'true')
+                    self.conf.set("Language", 'english', 'false')
+                    self.conf.write(ConfigFile)
+
+                else:
+                    print("Wrong number.  Please choose between 1 and 5")
+
+    def vulnerability_search(self):
+        with open(self.file, 'r') as csv_file:
+            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Analyzing data....")
+            text = csv_file.read().encode("utf-8").splitlines()
+            for line in text:
+                if ",," in str(line):
+                    pass
+
+                if self.wep:
+
+                    if "WEP" and ",," in str(line):
+                        pass
+
+                    elif "WEP" in str(line):
+                        self.wep_list.append(line)
+
+                if self.wps_o2:
+
+                    if "o2-WLAN" in str(line):
+                        self.o2_list.append(line)
+
+                if self.wps_tp_link:
+                    if "tp-link" in str(line):
+                        self.tp_link_list.append(line)
+
+                    elif "TP-Link" in str(line):
+                        self.tp_link_list.append(line)
+
+                if self.wpa:
+                    if "WPA-PSK-TKIP" and "WPA2" in str(line):
+                        pass
+
+                    elif "WPA-PSK-TKIP" in str(line):
+                        self.wpa_list.append(line)
+
+    def get_results(self):
+
+        self.wep_length = len(self.wep_list)
+        self.o2_length = len(self.o2_list)
+        self.tp_link_length = len(self.tp_link_list)
+        self.wpa_length = len(self.wpa_list)
+        self.all_length = self.wep_length + self.o2_length + self.tp_link_length + self.wpa_length
+
+    def show_results(self):
+
+        if self.wep:
+            print(f"""
+                            {Fore.LIGHTWHITE_EX}        {Fore.LIGHTYELLOW_EX}W{Fore.LIGHTCYAN_EX}E{Fore.LIGHTMAGENTA_EX}P
+    
+
+    {Fore.LIGHTRED_EX}WEP-Netzwerke: {Fore.LIGHTWHITE_EX}{self.wep_length} """)
+
+        if self.wpa:
+            print(f"""                          {Fore.LIGHTRED_EX}W{Fore.LIGHTCYAN_EX}P{Fore.LIGHTYELLOW_EX}A
+                            {Fore.LIGHTWHITE_EX}
+WEP is a WLAN protocol that was developed about 20 years ago to provide a way
+to secure a WLAN network. However, this network protocol is vulnerable to some 
+attacks. An attacker can manipulate the data being sent from the device to the 
+router and can find the password in less than 3 hours due to weak encryption. 
+WEP should no longer be used and poses a high security risk!
+
+
+
+.
+
+                {Fore.LIGHTYELLOW_EX}WPA (TKIP) Networks: {Fore.LIGHTWHITE_EX}{self.wpa_length} """)
+
+        if self.o2_list:
+            print(f"""
+
+                      {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}o{Fore.LIGHTMAGENTA_EX}2{Fore.LIGHTWHITE_EX}
+Most WLAN networks have a feature called WPS, which provides a quick way to 
+exchange the WLAN password. However, the implementation of WPS in some WLAN 
+is quite weak. Due to some errors, WPS has a maximum number of 11,000 possible 
+combinations. One can hack a WLAN network in less than 4 hours and find the 
+password using the 8-digit WPS PIN. There is no reason to use WPS, and it 
+should be disabled in the WLAN router settings. The manufacturer AVM uses 
+the Push-Button-Connect method as the standard WPS method, which is considered 
+secure as the button must be physically pressed. However, the manufacturer of 
+some o2 WLAN routers did not implement this well. For WLAN routers manufactured 
+by the Askey Compute Corporation, the default WPS PIN is 12345670, which is a 
+high security risk. Thus, the 20-digit password can be determined in 3-20 seconds!
+
+
+
+                 {Fore.LIGHTMAGENTA_EX}WiFi Networks with possible 12345670 PIN:  {Fore.LIGHTWHITE_EX}{self.o2_length}
+                """)
+
+        if self.wps_tp_link:
+            print(f"""
+
+                     {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}T{Fore.LIGHTMAGENTA_EX}P{Fore.LIGHTWHITE_EX}-{Fore.LIGHTGREEN_EX}L{Fore.LIGHTMAGENTA_EX}I{Fore.LIGHTWHITE_EX}N{Fore.LIGHTMAGENTA_EX}K{Fore.LIGHTWHITE_EX}
+
+There is another attack on WPS where some data is collected, and the PIN 
+is calculated using this data. This attack is called Pixie Dust and can 
+find the password in a few seconds. TP-Link networks are often affected 
+by this attack, and all TP-Link networks have no significant protection 
+against brute-force attacks. If one has some time, the password can also 
+be cracked here in a few days.
+
+                {Fore.LIGHTGREEN_EX}TP-Link Networks with possible security flaws: {Fore.LIGHTWHITE_EX}{self.tp_link_length}
+
+    """)
+
+        self.showing_input()
+
+    def showing_input(self):
+        self.showing = input(f"""
+    {Fore.LIGHTMAGENTA_EX}Found {self.wep_length} WEP Networks
+    {Fore.LIGHTYELLOW_EX}Found {self.wpa_length} WPA-TKIP Networks.
+    {Fore.LIGHTCYAN_EX}Found {self.o2_length} o2-WLAN Networks.
+    {Fore.LIGHTGREEN_EX}Found {self.tp_link_length} TP-Link Networks.
+    {Fore.LIGHTRED_EX}Found in total {self.all_length} Networks with possible security flaws. 
+
+    {Fore.LIGHTWHITE_EX}If you want to display the networks with name and GPS coordinates, then you can enter the number for it below:
+
+    {Fore.LIGHTRED_EX}1) WEP
+    {Fore.LIGHTBLUE_EX}2) WPA
+    {Fore.LIGHTMAGENTA_EX}3) o2-WLAN
+    {Fore.LIGHTGREEN_EX}4) TP-Link
+    5) Exit the analysis. 
+    ----------------=>:""")
+
+        if self.showing == "1":
+            self.show_wep()
+
+        elif self.showing == "2":
+            self.show_wpa()
+
+        elif self.showing == "3":
+            self.show_o2()
+
+        elif self.showing == "4":
+            self.show_tp_link()
+
+        elif self.showing == "5":
+            self.menu()
+
+    def show_wep(self):
+
+        for line in self.wep_list:
+            values = line.decode().strip().split(",")
+            mac = values[0]
+            name = values[1]
+            gps_latitude = values[6]
+            gps_longitude = values[7]
+
+            print(
+                f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
+        self.showing_input()
+
+    def show_wpa(self):
+
+        for line in self.wpa_list:
+            values = line.decode().strip().split(",")
+            mac = values[0]
+            name = values[1]
+            gps_latitude = values[6]
+            gps_longitude = values[7]
+
+            print(
+                f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
+        self.showing_input()
+
+    def show_o2(self):
+
+        for line in self.o2_list:
+            values = line.decode().strip().split(",")
+            mac = values[0]
+            name = values[1]
+            gps_latitude = values[6]
+            gps_longitude = values[7]
+
+            print(
+                f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
+        self.showing_input()
+
+    def show_tp_link(self):
+        for line in self.tp_link_list:
+            values = line.decode().strip().split(",")
+            mac = values[0]
+            name = values[1]
+            gps_latitude = values[6]
+            gps_longitude = values[7]
+
+            print(
+                f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
+
+        self.showing_input()
+
+
+
+
+
 
 
 conf = configparser.ConfigParser()
