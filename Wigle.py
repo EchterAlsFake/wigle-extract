@@ -10,12 +10,13 @@ class Configure():
         self.conf = configparser.ConfigParser()
         self.conf.read("config.ini")
         try:
-            self.get_variables()
-            print(Fore.GREEN + "Variables loaded.")
+            self.variables()
+            print(Fore.LIGHTGREEN_EX + "[+] "  + Fore.LIGHTMAGENTA_EX + "Variables loaded...")
         except Exception as e:
             print(Fore.LIGHTRED_EX + "[!] " + Fore.LIGHTMAGENTA_EX + "Error: " + str(e))
-
+            sys.exit()
         self.get_language()
+
 
         if self.language == "Deutsch":
             print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Konfiguration abgeschlossen!")
@@ -136,6 +137,47 @@ I have read and do not agree to the terms.
 
 """)
 
+    def variables(self):
+
+        if self.conf['WPS']['tp_link'] == 'true':
+            self.wps_tp_link = True
+            self.wps_tp_link_ext = Fore.LIGHTGREEN_EX + "Enabled"
+            print(self.wps_tp_link_ext)
+
+        elif self.conf['WPS']['tp_link'] == 'false':
+            self.wps_tp_link = False
+            self.wps_tp_link_ext = Fore.LIGHTRED_EX + "Disabled"
+            print(self.wps_tp_link_ext)
+
+        if self.conf['WPS']['o2'] == 'true':
+            self.wps_o2 = True
+            self.wps_o2_ext = Fore.LIGHTGREEN_EX + "Enabled"
+            print(self.wps_o2_ext)
+
+        elif self.conf['WPS']['o2'] == 'false':
+            self.wps_o2 = False
+            self.wps_o2_ext = Fore.LIGHTRED_EX + "Disabled"
+            print(self.wps_o2_ext)
+
+        if self.conf['WPA']['tkip'] == 'true':
+            self.wpa = True
+            self.wpa_ext = Fore.LIGHTGREEN_EX + "Enabled"
+
+        elif self.conf['WPA']['tkip'] == 'false':
+            self.wpa = False
+            self.wpa_ext = Fore.LIGHTRED_EX + "Disabled"
+
+        if self.conf['WEP']['wep'] == 'true':
+            self.wep = True
+            self.wep_ext = Fore.LIGHTGREEN_EX + "Enabled"
+
+        elif self.conf['WEP']['wep'] == 'false':
+            self.wep = False
+            self.wep_ext = Fore.LIGHTRED_EX + "Disabled"
+
+        else:
+            print("Variables not loaded.")
+
 
 class Wigle_German(Configure):
 
@@ -145,25 +187,21 @@ class Wigle_German(Configure):
         self.wpa_list = []
         self.tp_link_list = []
         self.o2_list = []
-        try:
-            self.get_variables()
-            print(Fore.GREEN + "Variables loaded.")
-        except Exception as e:
-            print("dd")
-
         self.menu()
 
     def menu(self):
 
-        menu_input = input("""
+        menu_input = input(f"""
 
-1) Schwachstellen Analyse
-2) Einstellungen
-3) Exit        
-------------------------------=>""")
+{Fore.LIGHTCYAN_EX}1) Schwachstellen Analyse
+{Fore.LIGHTGREEN_EX}2) Einstellungen
+{Fore.LIGHTMAGENTA_EX}3) Exit        
+{Fore.LIGHTRED_EX}------------------------------=>""")
 
         if menu_input == "1":
             self.vulnerability_search()
+            self.get_results()
+            self.show_results()
 
         elif menu_input == "2":
             self.settings()
@@ -171,48 +209,13 @@ class Wigle_German(Configure):
         elif menu_input == "3":
             exit()
 
-    def get_variables(self):
-
-        if self.conf['WPS']['tp_link'] == 'true':
-            self.wps_tp_link = True
-            self.wps_tp_link_ext = Fore.LIGHTGREEN_EX + "Enabled"
-
-        elif self.conf['WPS']['tp_link'] == 'false':
-            self.wps_tp_link = False
-            self.wps_tp_link_ext = Fore.LIGHTRED_EX + "Disabled"
-
-        elif self.conf['WPS']['o2'] == 'true':
-            self.wps_o2 = True
-            self.wps_o2_ext = Fore.LIGHTGREEN_EX + "Enabled"
-
-        elif self.conf['WPS']['o2'] == 'false':
-            self.wps_o2 = False
-            self.wps_o2_ext = Fore.LIGHTRED_EX + "Disabled"
-
-        elif self.conf['WPA']['tkip'] == 'true':
-            self.wpa = True
-            self.wpa_ext = Fore.LIGHTGREEN_EX + "Enabled"
-
-        elif self.conf['WPA']['tkip'] == 'false':
-            self.wpa = False
-            self.wpa_ext = Fore.LIGHTRED_EX + "Disabled"
-
-        elif self.conf['WEP']['wep'] == 'true':
-            self.wep = True
-            self.wep_ext = Fore.LIGHTGREEN_EX + "Enabled"
-
-        elif self.conf['WEP']['wep'] == 'false':
-            self.wep = False
-            self.wep_ext = Fore.LIGHTRED_EX + "Disabled"
-
     def settings(self):
-        if self.conf["WEP"]['wep'] == 'true':
-            self.wep_ext = Fore.LIGHTGREEN_EX + "Enabled"
+
         setting = input(f"""
         
         {Fore.LIGHTYELLOW_EX}1) Aktivieren / Deaktivieren - Anzeigen von WEP Netzwerken.         {Fore.LIGHTWHITE_EX}Aktuell: {self.wep_ext}
         {Fore.LIGHTMAGENTA_EX}2) Aktivieren / Deaktivieren - Anzeigen von WPA Netzwerken.         {Fore.LIGHTWHITE_EX}Aktuell: {self.wps_tp_link_ext}
-        {Fore.LIGHTCYAN_EX}3  Aktivieren / Deaktivieren - Anzeigen von o2  Netzwerken          {Fore.LIGHTWHITE_EX}Aktuell: {self.wps_o2_ext}
+        {Fore.LIGHTCYAN_EX}3  Aktivieren / Deaktivieren - Anzeigen von o2  Netzwerken.         {Fore.LIGHTWHITE_EX}Aktuell: {self.wps_o2_ext}
         {Fore.LIGHTGREEN_EX}4) Aktivieren / Deaktivieren - Anzeigen von TP-Link Netzwerken.     {Fore.LIGHTWHITE_EX}Aktuell: {self.wps_tp_link_ext}
         {Fore.LIGHTRED_EX}5) Sprache ändern - Englisch oder Deutsch.                          {Fore.LIGHTWHITE_EX}Aktuell: {self.language}
         ----------------------------------------------------------------=>""")
@@ -287,10 +290,14 @@ class Wigle_German(Configure):
 
                 if self.wep:
 
-                    if "WEP" in str(line):
+                    if "WEP" and ",," in str(line):
+                        pass
+
+                    elif "WEP" in str(line):
                         self.wep_list.append(line)
 
                 if self.wps_o2:
+
                     if "o2-WLAN" in str(line):
                         self.o2_list.append(line)
 
@@ -307,6 +314,7 @@ class Wigle_German(Configure):
 
                     elif "WPA-PSK-TKIP" in str(line):
                         self.wpa_list.append(line)
+
 
     def get_results(self):
 
@@ -328,7 +336,7 @@ herausfinden. WEP sollte nicht mehr verwendet werden und stellt ein hohes Sicher
 
 {Fore.LIGHTRED_EX}WEP-Netzwerke: {Fore.LIGHTWHITE_EX}{self.wep_length} """)
 
-        elif self.wpa:
+        if self.wpa:
 
             print(f"""                          {Fore.LIGHTRED_EX}W{Fore.LIGHTCYAN_EX}P{Fore.LIGHTYELLOW_EX}A
                         {Fore.LIGHTWHITE_EX}
@@ -339,7 +347,7 @@ auch nur wenige WPA-Netzwerke und der Standard ist heute WPA2/WPA3.
 
             {Fore.LIGHTYELLOW_EX}WPA (TKIP) Netzwerke: {Fore.LIGHTWHITE_EX}{self.wpa_length} """)
 
-        elif self.o2_list:
+        if self.o2_list:
 
             print(f"""
             
@@ -355,10 +363,10 @@ was ein hohes Sicherheitsrisiko darstellt. Somit kann das 20-stellige Passwort i
 
 
                     
-            W-LAN Netzwerke mit potentiellem 12345670 PIN:  {self.o2_list}
+            W-LAN Netzwerke mit potentiellem 12345670 PIN:  {self.o2_length}
             """)
 
-        elif self.wps_tp_link:
+        if self.wps_tp_link:
 
             print(f"""
                 
@@ -374,7 +382,11 @@ knacken.
 
 """)
 
-        showing = input(f"""
+        self.showing_input()
+
+
+    def showing_input(self):
+        self.showing = input(f"""
 {Fore.LIGHTMAGENTA_EX}Es wurden {self.wep_length} WEP Netzwerke gefunden.
 {Fore.LIGHTYELLOW_EX}Es wurden {self.wpa_length} WPA-TKIP Netzwerke gefunden.
 {Fore.LIGHTCYAN_EX}Es wurden {self.o2_length} o2-WLAN Netzwerke gefunden.
@@ -390,31 +402,49 @@ knacken.
 5) Die Analyse beenden. 
 ----------------=>:""")
 
-        print(Fore.LIGHTWHITE_EX)
+        if self.showing == "1":
+            self.show_wep()
 
-        if showing == "1":
+        elif self.showing == "2":
+            self.show_wpa()
 
-            for line in self.wep_list:
-                print(line)
+        elif self.showing == "3":
+            self.show_o2()
 
-        elif showing == "2":
+        elif self.showing == "4":
+            self.show_tp_link()
 
-            for line in self.wpa_list:
-                print(line)
-
-        elif showing == "3":
-
-            for line in self.o2_list:
-                print(line)
-
-        elif showing == "4":
-
-            for line in self.tp_link_list:
-                print(line)
-
-        elif showing == "5":
+        elif self.showing == "5":
             self.menu()
 
+
+
+    def show_wep(self):
+
+        for line in self.wep_list:
+            print(line)
+
+        self.showing_input()
+
+    def show_wpa(self):
+
+        for line in self.wpa_list:
+            print(line)
+
+        self.showing_input()
+
+    def show_o2(self):
+
+        for line in self.o2_list:
+            print(line)
+
+        self.showing_input()
+    def show_tp_link(self):
+
+        for line in self.tp_link_list:
+            print(line)
+
+        self.showing_input()
 
 class Wigle_English():
     pass
@@ -424,7 +454,9 @@ conf = configparser.ConfigParser()
 conf.read('config.ini')
 
 if conf['Language']['german'] == "true":
-    Wigle_German()
+    while True:
+        Wigle_German()
 
 elif conf['Language']['english'] == "true":
-    Wigle_English()
+    while True:
+        Wigle_English()
