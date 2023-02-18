@@ -11,12 +11,11 @@ class Configure():
         self.conf.read("config.ini")
         try:
             self.variables()
-            print(Fore.LIGHTGREEN_EX + "[+] "  + Fore.LIGHTMAGENTA_EX + "Variables loaded...")
+            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTMAGENTA_EX + "Variables loaded...")
         except Exception as e:
             print(Fore.LIGHTRED_EX + "[!] " + Fore.LIGHTMAGENTA_EX + "Error: " + str(e))
             sys.exit()
         self.get_language()
-
 
         if self.language == "Deutsch":
             print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Konfiguration abgeschlossen!")
@@ -282,9 +281,7 @@ class Wigle_German(Configure):
         with open(self.file, 'r') as csv_file:
             print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Daten werden ausgewertet....")
             text = csv_file.read().encode("utf-8").splitlines()
-
             for line in text:
-
                 if ",," in str(line):
                     pass
 
@@ -315,7 +312,6 @@ class Wigle_German(Configure):
                     elif "WPA-PSK-TKIP" in str(line):
                         self.wpa_list.append(line)
 
-
     def get_results(self):
 
         self.wep_length = len(self.wep_list)
@@ -327,7 +323,6 @@ class Wigle_German(Configure):
     def show_results(self):
 
         if self.wep:
-
             print(f"""
                         {Fore.LIGHTWHITE_EX}        {Fore.LIGHTYELLOW_EX}W{Fore.LIGHTCYAN_EX}E{Fore.LIGHTMAGENTA_EX}P
 WEP ist ein WLAN-Protokoll, das vor etwa 20 Jahren entwickelt wurde, um eine Möglichkeit zu bieten, ein WLAN-Netzwerk zu sichern. Allerdings ist dieses Netzwerkprotokoll anfällig für 
@@ -337,7 +332,6 @@ herausfinden. WEP sollte nicht mehr verwendet werden und stellt ein hohes Sicher
 {Fore.LIGHTRED_EX}WEP-Netzwerke: {Fore.LIGHTWHITE_EX}{self.wep_length} """)
 
         if self.wpa:
-
             print(f"""                          {Fore.LIGHTRED_EX}W{Fore.LIGHTCYAN_EX}P{Fore.LIGHTYELLOW_EX}A
                         {Fore.LIGHTWHITE_EX}
 WPA ist ein WLAN-Protokoll, das nach dem WEP-Standard entwickelt wurde. Es sollte die ursprünglichen Probleme von WEP lösen und eine bessere 
@@ -348,7 +342,6 @@ auch nur wenige WPA-Netzwerke und der Standard ist heute WPA2/WPA3.
             {Fore.LIGHTYELLOW_EX}WPA (TKIP) Netzwerke: {Fore.LIGHTWHITE_EX}{self.wpa_length} """)
 
         if self.o2_list:
-
             print(f"""
             
                   {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}o{Fore.LIGHTMAGENTA_EX}2{Fore.LIGHTWHITE_EX}
@@ -367,7 +360,6 @@ was ein hohes Sicherheitsrisiko darstellt. Somit kann das 20-stellige Passwort i
             """)
 
         if self.wps_tp_link:
-
             print(f"""
                 
                  {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}T{Fore.LIGHTMAGENTA_EX}P{Fore.LIGHTWHITE_EX}-{Fore.LIGHTGREEN_EX}L{Fore.LIGHTMAGENTA_EX}I{Fore.LIGHTWHITE_EX}N{Fore.LIGHTMAGENTA_EX}K{Fore.LIGHTWHITE_EX}
@@ -383,7 +375,6 @@ knacken.
 """)
 
         self.showing_input()
-
 
     def showing_input(self):
         self.showing = input(f"""
@@ -417,34 +408,58 @@ knacken.
         elif self.showing == "5":
             self.menu()
 
-
-
     def show_wep(self):
 
         for line in self.wep_list:
-            print(line)
 
+            values = line.decode().strip().split(",")
+            mac = values[0]
+            name = values[1]
+            gps_latitude = values[6]
+            gps_longitude = values[7]
+
+            print(f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
         self.showing_input()
 
     def show_wpa(self):
 
         for line in self.wpa_list:
-            print(line)
 
+            values = line.decode().strip().split(",")
+            mac = values[0]
+            name = values[1]
+            gps_latitude = values[6]
+            gps_longitude = values[7]
+
+            print(f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
         self.showing_input()
 
     def show_o2(self):
 
         for line in self.o2_list:
-            print(line)
 
+            values = line.decode().strip().split(",")
+            mac = values[0]
+            name = values[1]
+            gps_latitude = values[6]
+            gps_longitude = values[7]
+
+            print(f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
         self.showing_input()
+
     def show_tp_link(self):
-
         for line in self.tp_link_list:
-            print(line)
+
+            values = line.decode().strip().split(",")
+            mac = values[0]
+            name = values[1]
+            gps_latitude = values[6]
+            gps_longitude = values[7]
+
+            print(f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
 
         self.showing_input()
+
 
 class Wigle_English():
     pass
