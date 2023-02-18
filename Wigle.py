@@ -3,14 +3,24 @@ import datetime
 from colorama import *
 import time, sys, random, os, configparser
 
+
 class Configure():
     def __init__(self):
 
         self.conf = configparser.ConfigParser()
         self.conf.read("config.ini")
-        self.get_language()
-        self.get_variables()
+        try:
+            self.get_variables()
+            print(Fore.GREEN + "Variables loaded.")
+        except Exception as e:
+            print(Fore.LIGHTRED_EX + "[!] " + Fore.LIGHTMAGENTA_EX + "Error: " + str(e))
 
+        self.get_language()
+
+        if self.language == "Deutsch":
+            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Konfiguration abgeschlossen!")
+        elif self.language == "English":
+            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Configuration successful!")
 
     def get_language(self):
 
@@ -19,14 +29,12 @@ class Configure():
 
         elif self.conf['Language']['german'] == 'true':
             self.language = "Deutsch"
+            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTMAGENTA_EX + "Sprache: Deutsch")
             self.configure_german()
 
         elif self.conf['Language']['english'] == 'true':
             self.language = "English"
             self.configure_english()
-
-        else:
-            print("ERR:  Wrong number.  Please choose between 1 and 2")
 
     def set_language(self):
 
@@ -43,11 +51,13 @@ Please select your language:
                     self.conf.set("Language", 'german', 'true')
                     self.conf.set("Language", 'not_set', 'false')
                     self.conf.write(ConfigFile)
+                    self.configure_german()
 
                 elif language == "2":
                     self.conf.set("Language", 'english', 'true')
                     self.conf.set("Language", "not_set", 'false')
                     self.conf.write(ConfigFile)
+                    self.configure_english()
 
                 else:
                     print("ERR:  Wrong number.  Please choose between 1 and 2")
@@ -56,11 +66,11 @@ Please select your language:
 
     def configure_german(self):
 
+        if self.conf['AGB']['accept'] == 'false':
+            self.agb_german()
+
         self.file = input(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTCYAN_EX + "Bitte gib den Pfad zur CSV Datei ein: ")
         self.date = datetime.datetime.now()
-
-        if self.conf['AGB']['accept'] == 'false':
-            self.agb_german(self)
 
     def configure_english(self):
 
@@ -68,41 +78,7 @@ Please select your language:
         self.date = datetime.datetime.now()
 
         if self.conf['AGB']['accept'] == 'false':
-            self.agb_english(self)
-
-    def get_variables(self):
-
-        if self.conf['WPS']['tp_link'] == 'true':
-            self.wps_tp_link = True
-            self.wps_tp_link_ext = "Enabled"
-
-        elif self.conf['WPS']['tp_link'] == 'false':
-            self.wps_tp_link = False
-            self.wps_tp_link_ext = "Disabled"
-
-        elif self.conf['WPS']['o2'] == 'true':
-            self.wps_o2 = True
-            self.wps_o2_ext = "Enabled"
-
-        elif self.conf['WPS']['o2'] == 'false':
-            self.wps_o2 = False
-            self.wps_o2_ext = "Disabled"
-
-        elif self.conf['WPA']['tkip'] == 'true':
-            self.wpa = True
-            self.wpa_ext = "Enabled"
-
-        elif self.conf['WPA']['tkip'] == 'false':
-            self.wpa = False
-            self.wpa_ext = "Disabled"
-
-        elif self.conf['WEP']['wep'] == 'true':
-            self.wep = True
-            self.wep_ext = "Enabled"
-
-        elif self.conf['WEP']['wep'] == 'false':
-            self.wep = False
-            self.wep_ext = "Disabled"
+            self.agb_english()
 
     def agb_german(self):
 
@@ -164,10 +140,17 @@ I have read and do not agree to the terms.
 class Wigle_German(Configure):
 
     def __init__(self):
+        super().__init__()
         self.wep_list = []
         self.wpa_list = []
         self.tp_link_list = []
         self.o2_list = []
+        try:
+            self.get_variables()
+            print(Fore.GREEN + "Variables loaded.")
+        except Exception as e:
+            print("dd")
+
         self.menu()
 
     def menu(self):
@@ -188,15 +171,50 @@ class Wigle_German(Configure):
         elif menu_input == "3":
             exit()
 
-    def settings(self):
+    def get_variables(self):
 
+        if self.conf['WPS']['tp_link'] == 'true':
+            self.wps_tp_link = True
+            self.wps_tp_link_ext = Fore.LIGHTGREEN_EX + "Enabled"
+
+        elif self.conf['WPS']['tp_link'] == 'false':
+            self.wps_tp_link = False
+            self.wps_tp_link_ext = Fore.LIGHTRED_EX + "Disabled"
+
+        elif self.conf['WPS']['o2'] == 'true':
+            self.wps_o2 = True
+            self.wps_o2_ext = Fore.LIGHTGREEN_EX + "Enabled"
+
+        elif self.conf['WPS']['o2'] == 'false':
+            self.wps_o2 = False
+            self.wps_o2_ext = Fore.LIGHTRED_EX + "Disabled"
+
+        elif self.conf['WPA']['tkip'] == 'true':
+            self.wpa = True
+            self.wpa_ext = Fore.LIGHTGREEN_EX + "Enabled"
+
+        elif self.conf['WPA']['tkip'] == 'false':
+            self.wpa = False
+            self.wpa_ext = Fore.LIGHTRED_EX + "Disabled"
+
+        elif self.conf['WEP']['wep'] == 'true':
+            self.wep = True
+            self.wep_ext = Fore.LIGHTGREEN_EX + "Enabled"
+
+        elif self.conf['WEP']['wep'] == 'false':
+            self.wep = False
+            self.wep_ext = Fore.LIGHTRED_EX + "Disabled"
+
+    def settings(self):
+        if self.conf["WEP"]['wep'] == 'true':
+            self.wep_ext = Fore.LIGHTGREEN_EX + "Enabled"
         setting = input(f"""
         
-        {Fore.LIGHTYELLOW_EX}1) Aktivieren / Deaktivieren - Anzeigen von WEP Netzwerken.         Aktuell: {self.wep_ext}
-        {Fore.LIGHTMAGENTA_EX}2) Aktivieren / Deaktivieren - Anzeigen von WPA Netzwerken.         Aktuell: {self.wps_tp_link_ext}
-        {Fore.LIGHTCYAN_EX}3  Aktivieren / Deaktivieren - Anzeigen von o2  Netzwerken          Aktuell: {self.wps_o2_ext}
-        {Fore.LIGHTGREEN_EX}4) Aktivieren / Deaktivieren - Anzeigen von TP-Link Netzwerken.     Aktuell: {self.wps_tp_link_ext}
-        {Fore.LIGHTRED_EX}5) Sprache ändern - Englisch oder Deutsch.                          Aktuell: {self.language}
+        {Fore.LIGHTYELLOW_EX}1) Aktivieren / Deaktivieren - Anzeigen von WEP Netzwerken.         {Fore.LIGHTWHITE_EX}Aktuell: {self.wep_ext}
+        {Fore.LIGHTMAGENTA_EX}2) Aktivieren / Deaktivieren - Anzeigen von WPA Netzwerken.         {Fore.LIGHTWHITE_EX}Aktuell: {self.wps_tp_link_ext}
+        {Fore.LIGHTCYAN_EX}3  Aktivieren / Deaktivieren - Anzeigen von o2  Netzwerken          {Fore.LIGHTWHITE_EX}Aktuell: {self.wps_o2_ext}
+        {Fore.LIGHTGREEN_EX}4) Aktivieren / Deaktivieren - Anzeigen von TP-Link Netzwerken.     {Fore.LIGHTWHITE_EX}Aktuell: {self.wps_tp_link_ext}
+        {Fore.LIGHTRED_EX}5) Sprache ändern - Englisch oder Deutsch.                          {Fore.LIGHTWHITE_EX}Aktuell: {self.language}
         ----------------------------------------------------------------=>""")
 
         with open("config.ini", 'w') as ConfigFile:
@@ -267,23 +285,28 @@ class Wigle_German(Configure):
                 if ",," in str(line):
                     pass
 
-                elif "WEP" in str(line):
-                    self.wep_list.append(line)
+                if self.wep:
 
-                elif "o2-WLAN" in str(line):
-                    self.o2_list.append(line)
+                    if "WEP" in str(line):
+                        self.wep_list.append(line)
 
-                elif "tp-link" in str(line):
-                    self.tp_link_list.append(line)
+                if self.wps_o2:
+                    if "o2-WLAN" in str(line):
+                        self.o2_list.append(line)
 
-                elif "TP-Link" in str(line):
-                    self.tp_link_list.append(line)
+                if self.wps_tp_link:
+                    if "tp-link" in str(line):
+                        self.tp_link_list.append(line)
 
-                elif "WPA-PSK-TKIP" and "WPA2" in str(line):
-                    pass
+                    elif "TP-Link" in str(line):
+                        self.tp_link_list.append(line)
 
-                elif "WPA-PSK-TKIP" in str(line):
-                    self.wpa_list.append(line)
+                if self.wpa:
+                    if "WPA-PSK-TKIP" and "WPA2" in str(line):
+                        pass
+
+                    elif "WPA-PSK-TKIP" in str(line):
+                        self.wpa_list.append(line)
 
     def get_results(self):
 
@@ -292,8 +315,6 @@ class Wigle_German(Configure):
         self.tp_link_length = len(self.tp_link_list)
         self.wpa_length = len(self.wpa_list)
         self.all_length = self.wep_length + self.o2_length + self.tp_link_length + self.wpa_length
-
-
 
     def show_results(self):
 
@@ -305,7 +326,7 @@ WEP ist ein WLAN-Protokoll, das vor etwa 20 Jahren entwickelt wurde, um eine Mö
 einige Angriffe. Ein Angreifer kann die Daten, die vom Gerät zum Router gesendet werden, manipulieren und durch eine schlechte Verschlüsselung das Passwort in weniger als 3 Stunden 
 herausfinden. WEP sollte nicht mehr verwendet werden und stellt ein hohes Sicherheitsrisiko dar!
 
-{Fore.LIGHTRED_EX}WEP-Netzwerke: {Fore.LIGHTWHITE_EX}{self.wep_length} Du kannst alle WEP-Netzwerke anzeigen, indem du 1 eingibst. """)
+{Fore.LIGHTRED_EX}WEP-Netzwerke: {Fore.LIGHTWHITE_EX}{self.wep_length} """)
 
         elif self.wpa:
 
@@ -316,13 +337,13 @@ Sicherheit gewährleisten. Jedoch hat dies nicht ausgereicht und so kannWPA sehr
 dem von WEP, nur dass jetzt statt 24 Bit 48 Bit verwendet werden. Aber auch das ist nicht sicher. Siehe Michael Shutdown Exploit. Es gibt hier 
 auch nur wenige WPA-Netzwerke und der Standard ist heute WPA2/WPA3.
 
-            {Fore.LIGHTYELLOW_EX}WPA (TKIP) Netzwerke: {Fore.LIGHTWHITE_EX}{self.wpa_length}     Du kannst alle WPA Netzwerke anzeigen, indem du 2 eingibst.""")
+            {Fore.LIGHTYELLOW_EX}WPA (TKIP) Netzwerke: {Fore.LIGHTWHITE_EX}{self.wpa_length} """)
 
         elif self.o2_list:
 
             print(f"""
             
-                        {Fore.LIGHTWHITE_EX}
+                  {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}o{Fore.LIGHTMAGENTA_EX}2{Fore.LIGHTWHITE_EX}
 Die meisten WLAN-Netzwerke haben ein Feature namens WPS, welches eine schnelle Möglichkeit bietet, das WLAN-Passwort 
 auszutauschen. Allerdings ist die Implementierung bei einigen  WLAN-Routern ziemlich schwach. WPS hat aufgrund einiger Fehler 
 eine maximale Anzahl von 11000 möglichen Kombinationen. Man kann ein WLAN-Netzwerk in weniger als 4 Stunden hacken und mit 
@@ -334,18 +355,76 @@ was ein hohes Sicherheitsrisiko darstellt. Somit kann das 20-stellige Passwort i
 
 
                     
-            W-LAN Netzwerke mit potentiellem 12345670 PIN:  {self.o2_list}   
+            W-LAN Netzwerke mit potentiellem 12345670 PIN:  {self.o2_list}
             """)
+
+        elif self.wps_tp_link:
+
+            print(f"""
+                
+                 {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}T{Fore.LIGHTMAGENTA_EX}P{Fore.LIGHTWHITE_EX}-{Fore.LIGHTGREEN_EX}L{Fore.LIGHTMAGENTA_EX}I{Fore.LIGHTWHITE_EX}N{Fore.LIGHTMAGENTA_EX}K{Fore.LIGHTWHITE_EX}
+
+Es gibt bei WPS einen weiteren Angriff, bei welchem einige Daten gesammelt werden und der PIN mit diesen berechnet
+wird. Dieser Angriff nennt sich Pixie Dust und kann in wenigen Sekunden das Passwort herausfinden. Es sind häufig 
+TP-Link Netzwerke von diesem Angriff betroffen und dazu, haben alle TP-Link Netzwerke keinen nennenswerten Schutz 
+gegen Brute Force Attacken und wenn man ein bisschen Zeit hat, kann man auch hier das Passwort in ein paar Tagen
+knacken. 
+
+            {Fore.LIGHTGREEN_EX}TP-Link Netzwerke mit potientiellem Sicherheitsrisiko: {Fore.LIGHTWHITE_EX}{self.tp_link_length}
+
+""")
+
+        showing = input(f"""
+{Fore.LIGHTMAGENTA_EX}Es wurden {self.wep_length} WEP Netzwerke gefunden.
+{Fore.LIGHTYELLOW_EX}Es wurden {self.wpa_length} WPA-TKIP Netzwerke gefunden.
+{Fore.LIGHTCYAN_EX}Es wurden {self.o2_length} o2-WLAN Netzwerke gefunden.
+{Fore.LIGHTGREEN_EX}Es wurden {self.tp_link_length} TP-Link Netzwerke gefunden.
+{Fore.LIGHTRED_EX}Insgesamt haben {self.all_length} Netzwerke eine potentielle Schwachstelle. 
+
+{Fore.LIGHTWHITE_EX}Falls du die Netzwerke mit Name und GPS Koordinaten anzeigen möchtest, dann kannst du unten die Zahl dafür eingeben:
+
+{Fore.LIGHTRED_EX}1) WEP
+{Fore.LIGHTBLUE_EX}2) WPA
+{Fore.LIGHTMAGENTA_EX}3) o2-WLAN
+{Fore.LIGHTGREEN_EX}4) TP-Link
+5) Die Analyse beenden. 
+----------------=>:""")
+
+        print(Fore.LIGHTWHITE_EX)
+
+        if showing == "1":
+
+            for line in self.wep_list:
+                print(line)
+
+        elif showing == "2":
+
+            for line in self.wpa_list:
+                print(line)
+
+        elif showing == "3":
+
+            for line in self.o2_list:
+                print(line)
+
+        elif showing == "4":
+
+            for line in self.tp_link_list:
+                print(line)
+
+        elif showing == "5":
+            self.menu()
 
 
 class Wigle_English():
+    pass
 
-    def menu(self):
 
-    def settings(self):
+conf = configparser.ConfigParser()
+conf.read('config.ini')
 
-    def vulnerability_search(self):
+if conf['Language']['german'] == "true":
+    Wigle_German()
 
-    def get_results(self):
-
-    def show_results(self):
+elif conf['Language']['english'] == "true":
+    Wigle_English()
