@@ -1,7 +1,5 @@
-import datetime
-
 from colorama import *
-import time, sys, random, os, configparser
+import configparser, sys, datetime
 
 
 class Configure():
@@ -172,6 +170,7 @@ I have read and do not agree to the terms.
 
         else:
             print("Variables not loaded.")
+
 
 
 class Wigle_German(Configure):
@@ -530,6 +529,7 @@ knacken.""")
 
         elif options == "6":
             self.menu()
+
 
 
 class Wigle_English(Configure):
@@ -902,6 +902,9 @@ If one has some time, they can also crack the password here in a few days..""")
 
         elif options == "6":
             self.menu()
+
+
+
 
 if __name__ == "__main__":
 
