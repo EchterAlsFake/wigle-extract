@@ -190,7 +190,9 @@ class Wigle_German(Configure):
 
 {Fore.LIGHTCYAN_EX}1) Schwachstellen Analyse
 {Fore.LIGHTGREEN_EX}2) Einstellungen
-{Fore.LIGHTMAGENTA_EX}3) Exit        
+{Fore.LIGHTYELLOW_EX}3) Info
+{Fore.LIGHTRED_EX}4) CSV Datei ändern
+{Fore.LIGHTMAGENTA_EX}5) Exit        
 {Fore.LIGHTRED_EX}------------------------------=>""")
 
         if menu_input == "1":
@@ -202,6 +204,12 @@ class Wigle_German(Configure):
             self.settings()
 
         elif menu_input == "3":
+            self.info()
+
+        elif menu_input == "4":
+            self.file = input(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTMAGENTA_EX + "Bitte gib den Pfad zur CSV Datei ein: ")
+
+        elif menu_input == "5":
             exit()
 
     def settings(self):
@@ -318,68 +326,36 @@ class Wigle_German(Configure):
 
     def show_results(self):
 
-        if self.wep:
-            print(f"""
-                        {Fore.LIGHTWHITE_EX}        {Fore.LIGHTYELLOW_EX}W{Fore.LIGHTCYAN_EX}E{Fore.LIGHTMAGENTA_EX}P
-WEP ist ein WLAN-Protokoll, das vor etwa 20 Jahren entwickelt wurde, um eine Möglichkeit zu bieten, ein WLAN-Netzwerk zu sichern. Allerdings ist dieses Netzwerkprotokoll anfällig für 
-einige Angriffe. Ein Angreifer kann die Daten, die vom Gerät zum Router gesendet werden, manipulieren und durch eine schlechte Verschlüsselung das Passwort in weniger als 3 Stunden 
-herausfinden. WEP sollte nicht mehr verwendet werden und stellt ein hohes Sicherheitsrisiko dar!
+        if self.wep_length == 0:
+            print(Fore.LIGHTRED_EX + "Es wurden keine WEP Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
 
-{Fore.LIGHTRED_EX}WEP-Netzwerke: {Fore.LIGHTWHITE_EX}{self.wep_length} """)
+        elif self.wep:
+            print(f"{Fore.LIGHTRED_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.wep_length}{Fore.LIGHTRED_EX} WEP Netzwerke gefunden.")
 
-        if self.wpa:
-            print(f"""                          {Fore.LIGHTRED_EX}W{Fore.LIGHTCYAN_EX}P{Fore.LIGHTYELLOW_EX}A
-                        {Fore.LIGHTWHITE_EX}
-WPA ist ein WLAN-Protokoll, das nach dem WEP-Standard entwickelt wurde. Es sollte die ursprünglichen Probleme von WEP lösen und eine bessere 
-Sicherheit gewährleisten. Jedoch hat dies nicht ausgereicht und so kannWPA sehr schnell geknackt werden. Der Algorithmus basiert immer noch auf
-dem von WEP, nur dass jetzt statt 24 Bit 48 Bit verwendet werden. Aber auch das ist nicht sicher. Siehe Michael Shutdown Exploit. Es gibt hier 
-auch nur wenige WPA-Netzwerke und der Standard ist heute WPA2/WPA3.
+        if self.o2_length == 0:
+            print(Fore.LIGHTRED_EX + "Es wurden keine o2-WLAN Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
 
-            {Fore.LIGHTYELLOW_EX}WPA (TKIP) Netzwerke: {Fore.LIGHTWHITE_EX}{self.wpa_length} """)
+        elif self.o2_length:
+            print(f"{Fore.LIGHTMAGENTA_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.o2_length}{Fore.LIGHTMAGENTA_EX} o2-WLAN Netzwerke gefunden.")
 
-        if self.o2_list:
-            print(f"""
-            
-                  {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}o{Fore.LIGHTMAGENTA_EX}2{Fore.LIGHTWHITE_EX}
-Die meisten WLAN-Netzwerke haben ein Feature namens WPS, welches eine schnelle Möglichkeit bietet, das WLAN-Passwort 
-auszutauschen. Allerdings ist die Implementierung bei einigen  WLAN-Routern ziemlich schwach. WPS hat aufgrund einiger Fehler 
-eine maximale Anzahl von 11000 möglichen Kombinationen. Man kann ein WLAN-Netzwerk in weniger als 4 Stunden hacken und mit 
-dem 8-stelligen WPS-PIN das Passwort herausfinden. Es gibt keinen Grund, WPS zu verwenden, und man sollte es in den 
-WLAN-Router-Einstellungen deaktivieren. Der Hersteller AVM hat als Standard-WPS-Methode die Push-Button-Connect-Methode, die 
-als sicher gilt, da hier wirklich der Knopf gedrückt werden muss. Allerdings hat der Hersteller einiger o2-WLAN-Router das nicht 
-so gut gemacht. Bei WLAN-Routern, die von der Askey Compute Corporation hergestellt wurden, ist der Standard-WPS-PIN 12345670, 
-was ein hohes Sicherheitsrisiko darstellt. Somit kann das 20-stellige Passwort in 3-20 Sekunden ermittelt werden!
+        if self.tp_link_length == 0:
+            print(Fore.LIGHTRED_EX + "Es wurden keine TP-Link Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
 
+        elif self.tp_link_length:
+            print(f"{Fore.LIGHTGREEN_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.tp_link_length}{Fore.LIGHTGREEN_EX} TP-Link Netzwerke gefunden.")
 
-                    
-            W-LAN Netzwerke mit potentiellem 12345670 PIN:  {self.o2_length}
-            """)
+        if self.wpa_length == 0:
+            print(Fore.LIGHTRED_EX + "Es wurden keine WPA-PSK-TKIP Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
 
-        if self.wps_tp_link:
-            print(f"""
-                
-                 {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}T{Fore.LIGHTMAGENTA_EX}P{Fore.LIGHTWHITE_EX}-{Fore.LIGHTGREEN_EX}L{Fore.LIGHTMAGENTA_EX}I{Fore.LIGHTWHITE_EX}N{Fore.LIGHTMAGENTA_EX}K{Fore.LIGHTWHITE_EX}
+        elif self.wpa_length:
+            print(f"{Fore.LIGHTBLUE_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.wpa_length} {Fore.LIGHTBLUE_EX}WPA-PSK-TKIP Netzwerke gefunden.")
 
-Es gibt bei WPS einen weiteren Angriff, bei welchem einige Daten gesammelt werden und der PIN mit diesen berechnet
-wird. Dieser Angriff nennt sich Pixie Dust und kann in wenigen Sekunden das Passwort herausfinden. Es sind häufig 
-TP-Link Netzwerke von diesem Angriff betroffen und dazu, haben alle TP-Link Netzwerke keinen nennenswerten Schutz 
-gegen Brute Force Attacken und wenn man ein bisschen Zeit hat, kann man auch hier das Passwort in ein paar Tagen
-knacken. 
-
-            {Fore.LIGHTGREEN_EX}TP-Link Netzwerke mit potientiellem Sicherheitsrisiko: {Fore.LIGHTWHITE_EX}{self.tp_link_length}
-
-""")
+        print(f"{Fore.LIGHTYELLOW_EX}Insgesamt haben: {Fore.LIGHTWHITE_EX}{self.all_length}{Fore.LIGHTYELLOW_EX} W-LAN Netzwerke eine potentielle Schwachstelle.")
 
         self.showing_input()
 
     def showing_input(self):
         self.showing = input(f"""
-{Fore.LIGHTMAGENTA_EX}Es wurden {self.wep_length} WEP Netzwerke gefunden.
-{Fore.LIGHTYELLOW_EX}Es wurden {self.wpa_length} WPA-TKIP Netzwerke gefunden.
-{Fore.LIGHTCYAN_EX}Es wurden {self.o2_length} o2-WLAN Netzwerke gefunden.
-{Fore.LIGHTGREEN_EX}Es wurden {self.tp_link_length} TP-Link Netzwerke gefunden.
-{Fore.LIGHTRED_EX}Insgesamt haben {self.all_length} Netzwerke eine potentielle Schwachstelle. 
-
 {Fore.LIGHTWHITE_EX}Falls du die Netzwerke mit Name und GPS Koordinaten anzeigen möchtest, dann kannst du unten die Zahl dafür eingeben:
 
 {Fore.LIGHTRED_EX}1) WEP
@@ -414,47 +390,142 @@ knacken.
             gps_latitude = values[6]
             gps_longitude = values[7]
 
-            print(f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
+            print("{:<30} {:<30} {:<30} {:<30}".format(f"{Fore.LIGHTYELLOW_EX}[Name]", f"{Fore.LIGHTCYAN_EX}[Latitude]", f"{Fore.LIGHTGREEN_EX}[Longitude]", f"{Fore.LIGHTWHITE_EX}[Mac] "))
+            print("{:<30} {:<30} {:<30} {:<30}".format(Fore.LIGHTYELLOW_EX + name, Fore.LIGHTCYAN_EX + gps_latitude, Fore.LIGHTGREEN_EX + gps_longitude, Fore.LIGHTWHITE_EX + mac))
+
         self.showing_input()
 
     def show_wpa(self):
 
         for line in self.wpa_list:
-
             values = line.decode().strip().split(",")
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
             gps_longitude = values[7]
 
-            print(f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
+            print("{:<30} {:<30} {:<30} {:<30}".format(f"{Fore.LIGHTYELLOW_EX}[Name]", f"{Fore.LIGHTCYAN_EX}[Latitude]",
+                                                       f"{Fore.LIGHTGREEN_EX}[Longitude]",
+                                                       f"{Fore.LIGHTWHITE_EX}[Mac] "))
+            print("{:<30} {:<30} {:<30} {:<30}".format(Fore.LIGHTYELLOW_EX + name, Fore.LIGHTCYAN_EX + gps_latitude,
+                                                       Fore.LIGHTGREEN_EX + gps_longitude, Fore.LIGHTWHITE_EX + mac))
         self.showing_input()
 
     def show_o2(self):
 
         for line in self.o2_list:
-
             values = line.decode().strip().split(",")
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
             gps_longitude = values[7]
 
-            print(f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
+            print("{:<30} {:<30} {:<30} {:<30}".format(f"{Fore.LIGHTYELLOW_EX}[Name]", f"{Fore.LIGHTCYAN_EX}[Latitude]",
+                                                       f"{Fore.LIGHTGREEN_EX}[Longitude]",
+                                                       f"{Fore.LIGHTWHITE_EX}[Mac] "))
+            print("{:<30} {:<30} {:<30} {:<30}".format(Fore.LIGHTYELLOW_EX + name, Fore.LIGHTCYAN_EX + gps_latitude,
+                                                       Fore.LIGHTGREEN_EX + gps_longitude, Fore.LIGHTWHITE_EX + mac))
         self.showing_input()
 
     def show_tp_link(self):
         for line in self.tp_link_list:
-
             values = line.decode().strip().split(",")
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
             gps_longitude = values[7]
 
-            print(f"{Fore.LIGHTCYAN_EX} Mac: {mac} , {Fore.LIGHTYELLOW_EX}Name: {name}, {Fore.LIGHTMAGENTA_EX}Latitude: {gps_latitude}, {Fore.LIGHTBLUE_EX}Longitude: {gps_longitude}")
+            print("{:<30} {:<30} {:<30} {:<30}".format(f"{Fore.LIGHTYELLOW_EX}[Name]", f"{Fore.LIGHTCYAN_EX}[Latitude]",
+                                                       f"{Fore.LIGHTGREEN_EX}[Longitude]",
+                                                       f"{Fore.LIGHTWHITE_EX}[Mac] "))
+            print("{:<30} {:<30} {:<30} {:<30}".format(Fore.LIGHTYELLOW_EX + name, Fore.LIGHTCYAN_EX + gps_latitude,
+                                                       Fore.LIGHTGREEN_EX + gps_longitude, Fore.LIGHTWHITE_EX + mac))
 
         self.showing_input()
+
+    def program_info(self):
+        print(f"""
+{Fore.LIGHTWHITE_EX}
+Wigle-Extract wurde von Johannes Habel (EchterAlsFake) entwickelt un
+zu zeigen, wie viele W-LAN Netzwerke bis heute eine Schwachstelle haben.
+
+Das Programm wird mithilfe der CSV Dateien von Wigle benutzt.  Diese 
+werden nach den Parametern meiner persönlichen Erfahrung ausgewertet.
+
+Die Lizenz des Programmes, erlaubt es jedem es zu verändern und zu nutzen.
+Bei Veränderung MUSS die Original Quelle angegeben werden (Creative Commons).""")
+
+    def wpa_info(self):
+        print(f"""{Fore.LIGHTRED_EX}W{Fore.LIGHTCYAN_EX}P{Fore.LIGHTYELLOW_EX}A
+                                {Fore.LIGHTWHITE_EX}
+WPA ist ein WLAN-Protokoll, das nach dem WEP-Standard entwickelt wurde. Es sollte die ursprünglichen Probleme von WEP lösen und eine bessere 
+Sicherheit gewährleisten. Jedoch hat dies nicht ausgereicht und so kannWPA sehr schnell geknackt werden. Der Algorithmus basiert immer noch auf
+dem von WEP, nur dass jetzt statt 24 Bit 48 Bit verwendet werden. Aber auch das ist nicht sicher. Siehe Michael Shutdown Exploit. Es gibt hier 
+auch nur wenige WPA-Netzwerke und der Standard ist heute WPA2/WPA3.""")
+
+    def wep_info(self):
+        print(f"""
+        {Fore.LIGHTWHITE_EX}{Fore.LIGHTYELLOW_EX}W{Fore.LIGHTCYAN_EX}E{Fore.LIGHTMAGENTA_EX}P  {Fore.LIGHTWHITE_EX}
+WEP ist ein WLAN-Protokoll, das vor etwa 20 Jahren entwickelt wurde, um eine Möglichkeit zu bieten, ein WLAN-Netzwerk zu sichern. Allerdings ist dieses Netzwerkprotokoll anfällig für 
+einige Angriffe. Ein Angreifer kann die Daten, die vom Gerät zum Router gesendet werden, manipulieren und durch eine schlechte Verschlüsselung das Passwort in weniger als 3 Stunden 
+herausfinden. WEP sollte nicht mehr verwendet werden und stellt ein hohes Sicherheitsrisiko dar!""")
+
+    def o2_info(self):
+        print(f"""
+
+    {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}o{Fore.LIGHTMAGENTA_EX}2{Fore.LIGHTWHITE_EX}
+Die meisten WLAN-Netzwerke haben ein Feature namens WPS, welches eine schnelle Möglichkeit bietet, das WLAN-Passwort 
+auszutauschen. Allerdings ist die Implementierung bei einigen  WLAN-Routern ziemlich schwach. WPS hat aufgrund einiger Fehler 
+eine maximale Anzahl von 11000 möglichen Kombinationen. Man kann ein WLAN-Netzwerk in weniger als 4 Stunden hacken und mit 
+dem 8-stelligen WPS-PIN das Passwort herausfinden. Es gibt keinen Grund, WPS zu verwenden, und man sollte es in den 
+WLAN-Router-Einstellungen deaktivieren. Der Hersteller AVM hat als Standard-WPS-Methode die Push-Button-Connect-Methode, die 
+als sicher gilt, da hier wirklich der Knopf gedrückt werden muss. Allerdings hat der Hersteller einiger o2-WLAN-Router das nicht 
+so gut gemacht. Bei WLAN-Routern, die von der Askey Compute Corporation hergestellt wurden, ist der Standard-WPS-PIN 12345670, 
+was ein hohes Sicherheitsrisiko darstellt. Somit kann das 20-stellige Passwort in 3-20 Sekunden ermittelt werden!""")
+
+    def tp_link_info(self):
+        print(f"""
+        {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}T{Fore.LIGHTMAGENTA_EX}P{Fore.LIGHTWHITE_EX}-{Fore.LIGHTGREEN_EX}L{Fore.LIGHTMAGENTA_EX}I{Fore.LIGHTWHITE_EX}N{Fore.LIGHTMAGENTA_EX}K{Fore.LIGHTWHITE_EX}
+
+Es gibt bei WPS einen weiteren Angriff, bei welchem einige Daten gesammelt werden und der PIN mit diesen berechnet
+wird. Dieser Angriff nennt sich Pixie Dust und kann in wenigen Sekunden das Passwort herausfinden. Es sind häufig 
+TP-Link Netzwerke von diesem Angriff betroffen und dazu, haben alle TP-Link Netzwerke keinen nennenswerten Schutz 
+gegen Brute Force Attacken und wenn man ein bisschen Zeit hat, kann man auch hier das Passwort in ein paar Tagen
+knacken.""")
+
+    def info(self):
+
+        options = input(f"""
+{Fore.LIGHTGREEN_EX}1) Programm Info
+{Fore.LIGHTRED_EX}2) WEP Info
+{Fore.LIGHTCYAN_EX}3) WPA Info
+{Fore.LIGHTMAGENTA_EX}4) o2 Info
+{Fore.GREEN}5) TP-Link Info
+{Fore.LIGHTYELLOW_EX}6) Exit
+----------------=>:""")
+
+        if options == "1":
+            self.program_info()
+            self.menu()
+
+        elif options == "2":
+            self.wep_info()
+            self.menu()
+
+        elif options == "3":
+            self.wpa_info()
+            self.menu()
+
+        elif options == "4":
+            self.o2_info()
+            self.menu()
+
+        elif options == "5":
+            self.tp_link_info()
+            self.menu()
+
+        elif options == "6":
+            self.menu()
 
 
 class Wigle_English(Configure):
@@ -603,6 +674,12 @@ class Wigle_English(Configure):
         if self.wep:
             print(f"""
                             {Fore.LIGHTWHITE_EX}        {Fore.LIGHTYELLOW_EX}W{Fore.LIGHTCYAN_EX}E{Fore.LIGHTMAGENTA_EX}P
+WEP is a WLAN protocol that was developed about 20 years ago to provide a way
+to secure a WLAN network. However, this network protocol is vulnerable to some 
+attacks. An attacker can manipulate the data being sent from the device to the 
+router and can find the password in less than 3 hours due to weak encryption. 
+WEP should no longer be used and poses a high security risk!
+    
     
 
     {Fore.LIGHTRED_EX}WEP-Netzwerke: {Fore.LIGHTWHITE_EX}{self.wep_length} """)
@@ -610,11 +687,7 @@ class Wigle_English(Configure):
         if self.wpa:
             print(f"""                          {Fore.LIGHTRED_EX}W{Fore.LIGHTCYAN_EX}P{Fore.LIGHTYELLOW_EX}A
                             {Fore.LIGHTWHITE_EX}
-WEP is a WLAN protocol that was developed about 20 years ago to provide a way
-to secure a WLAN network. However, this network protocol is vulnerable to some 
-attacks. An attacker can manipulate the data being sent from the device to the 
-router and can find the password in less than 3 hours due to weak encryption. 
-WEP should no longer be used and poses a high security risk!
+
 
 
 
@@ -646,16 +719,16 @@ high security risk. Thus, the 20-digit password can be determined in 3-20 second
         if self.wps_tp_link:
             print(f"""
 
-                     {Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}T{Fore.LIGHTMAGENTA_EX}P{Fore.LIGHTWHITE_EX}-{Fore.LIGHTGREEN_EX}L{Fore.LIGHTMAGENTA_EX}I{Fore.LIGHTWHITE_EX}N{Fore.LIGHTMAGENTA_EX}K{Fore.LIGHTWHITE_EX}
+{Fore.LIGHTGREEN_EX}W{Fore.LIGHTYELLOW_EX}P{Fore.LIGHTCYAN_EX}S{Fore.LIGHTMAGENTA_EX}-{Fore.LIGHTGREEN_EX}T{Fore.LIGHTMAGENTA_EX}P{Fore.LIGHTWHITE_EX}-{Fore.LIGHTGREEN_EX}L{Fore.LIGHTMAGENTA_EX}I{Fore.LIGHTWHITE_EX}N{Fore.LIGHTMAGENTA_EX}K{Fore.LIGHTWHITE_EX}
 
-There is another attack on WPS where some data is collected, and the PIN 
+[There is another attack on WPS where some data is collected, and the PIN 
 is calculated using this data. This attack is called Pixie Dust and can 
 find the password in a few seconds. TP-Link networks are often affected 
 by this attack, and all TP-Link networks have no significant protection 
 against brute-force attacks. If one has some time, the password can also 
-be cracked here in a few days.
+be cracked here in a few days.]
 
-                {Fore.LIGHTGREEN_EX}TP-Link Networks with possible security flaws: {Fore.LIGHTWHITE_EX}{self.tp_link_length}
+{Fore.LIGHTGREEN_EX}TP-Link Networks with possible security flaws: {Fore.LIGHTWHITE_EX}{self.tp_link_length}
 
     """)
 
