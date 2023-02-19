@@ -918,3 +918,7 @@ if __name__ == "__main__":
     elif conf['Language']['english'] == "true":
         while True:
             Wigle_English()
+
+    elif conf['Language']['not_set'] == "true":
+        Configure()
+
