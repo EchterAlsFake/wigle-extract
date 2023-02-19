@@ -2,7 +2,7 @@
 
 
 Wigle-Extract is a program that can interact with
-the CSV files from wigle. I scans for weak secured 
+the CSV files from wigle. It scans for weak secured 
 WiFi networks based on my personal experiences. 
 
 It has a nice looking CLI and I will release weekly
