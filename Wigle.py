@@ -1,8 +1,35 @@
+import logging
+
 from colorama import *
 import configparser, sys, datetime
 
+date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-class Configure():
+
+class Logger():
+
+    def error(self, e, cls):
+        Logger = logging.getLogger(cls)
+        Logger.setLevel(logging.ERROR)
+        Logger.error(f"Dare: {date}e ERROR: {e}")
+
+    def info(self, e, cls):
+        Logger = logging.getLogger(cls)
+        Logger.setLevel(logging.INFO)
+        Logger.info(f"Date: {date} INFO: {e}")
+
+    def debug(self, e, cls):
+        Logger = logging.getLogger(cls)
+        Logger.setLevel(logging.DEBUG)
+        Logger.debug(f"Date: {date} DEBUG: {e}")
+
+    def warning(self, e, cls):
+        Logger = logging.getLogger(cls)
+        Logger.setLevel(logging.WARNING)
+        Logger.warning(f"Date: {date} WARNING: {e}")
+
+
+class Configure(Logger):
     def __init__(self):
 
         self.conf = configparser.ConfigParser()
@@ -12,6 +39,7 @@ class Configure():
             print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTMAGENTA_EX + "Variables loaded...")
         except Exception as e:
             print(Fore.LIGHTRED_EX + "[!] " + Fore.LIGHTMAGENTA_EX + "Error: " + str(e))
+            self.error(e, cls="Configure . __init__(): ")
             sys.exit()
         self.get_language()
 
@@ -172,7 +200,6 @@ I have read and do not agree to the terms.
             print("Variables not loaded.")
 
 
-
 class Wigle_German(Configure):
 
     def __init__(self):
@@ -205,7 +232,8 @@ class Wigle_German(Configure):
             self.info()
 
         elif menu_input == "4":
-            self.file = input(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTMAGENTA_EX + "Bitte gib den Pfad zur CSV Datei ein: ")
+            self.file = input(
+                Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTMAGENTA_EX + "Bitte gib den Pfad zur CSV Datei ein: ")
             self.menu()
 
         elif menu_input == "5":
@@ -328,30 +356,39 @@ class Wigle_German(Configure):
     def show_results(self):
 
         if self.wep_length == 0:
-            print(Fore.LIGHTRED_EX + "Es wurden keine WEP Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
+            print(
+                Fore.LIGHTRED_EX + "Es wurden keine WEP Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
 
         elif self.wep:
-            print(f"{Fore.LIGHTRED_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.wep_length}{Fore.LIGHTRED_EX} WEP Netzwerke gefunden.")
+            print(
+                f"{Fore.LIGHTRED_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.wep_length}{Fore.LIGHTRED_EX} WEP Netzwerke gefunden.")
 
         if self.o2_length == 0:
-            print(Fore.LIGHTRED_EX + "Es wurden keine o2-WLAN Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
+            print(
+                Fore.LIGHTRED_EX + "Es wurden keine o2-WLAN Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
 
         elif self.o2_length:
-            print(f"{Fore.LIGHTMAGENTA_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.o2_length}{Fore.LIGHTMAGENTA_EX} o2-WLAN Netzwerke gefunden.")
+            print(
+                f"{Fore.LIGHTMAGENTA_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.o2_length}{Fore.LIGHTMAGENTA_EX} o2-WLAN Netzwerke gefunden.")
 
         if self.tp_link_length == 0:
-            print(Fore.LIGHTRED_EX + "Es wurden keine TP-Link Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
+            print(
+                Fore.LIGHTRED_EX + "Es wurden keine TP-Link Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
 
         elif self.tp_link_length:
-            print(f"{Fore.LIGHTGREEN_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.tp_link_length}{Fore.LIGHTGREEN_EX} TP-Link Netzwerke gefunden.")
+            print(
+                f"{Fore.LIGHTGREEN_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.tp_link_length}{Fore.LIGHTGREEN_EX} TP-Link Netzwerke gefunden.")
 
         if self.wpa_length == 0:
-            print(Fore.LIGHTRED_EX + "Es wurden keine WPA-PSK-TKIP Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
+            print(
+                Fore.LIGHTRED_EX + "Es wurden keine WPA-PSK-TKIP Netzwerke gefunden oder das Anzeigen dieser ist in den Einstellungen deaktiviert worden.")
 
         elif self.wpa_length:
-            print(f"{Fore.LIGHTBLUE_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.wpa_length} {Fore.LIGHTBLUE_EX}WPA-PSK-TKIP Netzwerke gefunden.")
+            print(
+                f"{Fore.LIGHTBLUE_EX}Es wurden: {Fore.LIGHTWHITE_EX}{self.wpa_length} {Fore.LIGHTBLUE_EX}WPA-PSK-TKIP Netzwerke gefunden.")
 
-        print(f"{Fore.LIGHTYELLOW_EX}Insgesamt haben: {Fore.LIGHTWHITE_EX}{self.all_length}{Fore.LIGHTYELLOW_EX} W-LAN Netzwerke eine potentielle Schwachstelle.")
+        print(
+            f"{Fore.LIGHTYELLOW_EX}Insgesamt haben: {Fore.LIGHTWHITE_EX}{self.all_length}{Fore.LIGHTYELLOW_EX} W-LAN Netzwerke eine potentielle Schwachstelle.")
 
         self.showing_input()
 
@@ -384,15 +421,17 @@ class Wigle_German(Configure):
     def show_wep(self):
 
         for line in self.wep_list:
-
             values = line.decode().strip().split(",")
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
             gps_longitude = values[7]
 
-            print("{:<30} {:<30} {:<30} {:<30}".format(f"{Fore.LIGHTYELLOW_EX}[Name]", f"{Fore.LIGHTCYAN_EX}[Latitude]", f"{Fore.LIGHTGREEN_EX}[Longitude]", f"{Fore.LIGHTWHITE_EX}[Mac] "))
-            print("{:<30} {:<30} {:<30} {:<30}".format(Fore.LIGHTYELLOW_EX + name, Fore.LIGHTCYAN_EX + gps_latitude, Fore.LIGHTGREEN_EX + gps_longitude, Fore.LIGHTWHITE_EX + mac))
+            print("{:<30} {:<30} {:<30} {:<30}".format(f"{Fore.LIGHTYELLOW_EX}[Name]", f"{Fore.LIGHTCYAN_EX}[Latitude]",
+                                                       f"{Fore.LIGHTGREEN_EX}[Longitude]",
+                                                       f"{Fore.LIGHTWHITE_EX}[Mac] "))
+            print("{:<30} {:<30} {:<30} {:<30}".format(Fore.LIGHTYELLOW_EX + name, Fore.LIGHTCYAN_EX + gps_latitude,
+                                                       Fore.LIGHTGREEN_EX + gps_longitude, Fore.LIGHTWHITE_EX + mac))
 
         self.showing_input()
 
@@ -529,7 +568,6 @@ knacken.""")
 
         elif options == "6":
             self.menu()
-
 
 
 class Wigle_English(Configure):
@@ -904,21 +942,35 @@ If one has some time, they can also crack the password here in a few days..""")
             self.menu()
 
 
-
-
 if __name__ == "__main__":
 
-    conf = configparser.ConfigParser()
-    conf.read('config.ini')
+    try:
 
-    if conf['Language']['german'] == "true":
-        while True:
-            Wigle_German()
+        conf = configparser.ConfigParser()
+        conf.read('config.ini')
 
-    elif conf['Language']['english'] == "true":
-        while True:
-            Wigle_English()
+        if conf['Language']['german'] == "true":
+            while True:
+                Wigle_German()
 
-    elif conf['Language']['not_set'] == "true":
-        Configure()
+        elif conf['Language']['english'] == "true":
+            while True:
+                Wigle_English()
 
+        elif conf['Language']['not_set'] == "true":
+            Configure()
+
+
+    except KeyError as e:
+        print(
+            f"{Fore.LIGHTRED_EX}[!] {Fore.LIGHTWHITE_EX}  Unhandled Key Error:  Probably some issues with the configuration file.  Please check the file and try again.")
+        Logger().error(cls="__main__", e=e)
+
+    except FileNotFoundError as e:
+        print(
+            f"{Fore.LIGHTRED_EX}[!] {Fore.LIGHTWHITE_EX} FileNotFoundError: Probably the path to the CSV file is wrong. Please correct it and make sure on Windows you are using double slashes like this: C:\\Users\\...")
+        Logger().error(cls="__main__", e=e)
+
+    except Exception as e:
+        print(f"{Fore.LIGHTRED_EX}[!] {Fore.LIGHTWHITE_EX} Unknown Exception occured. Please report the Log Files to GitHub or send them via E-Mail.  Thanks :) ")
+        Logger().error(cls="__main__", e=e)
