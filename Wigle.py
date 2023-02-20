@@ -4,26 +4,30 @@ from colorama import *
 import configparser, sys, datetime
 
 date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
+log_file = "logs.log"
 
 class Logger():
 
     def error(self, e, cls):
+        logging.setBasicConfig(filename=log_file)
         Logger = logging.getLogger(cls)
         Logger.setLevel(logging.ERROR)
         Logger.error(f"Dare: {date}e ERROR: {e}")
 
     def info(self, e, cls):
+        logging.setBasicConfig(filename=log_file)
         Logger = logging.getLogger(cls)
         Logger.setLevel(logging.INFO)
         Logger.info(f"Date: {date} INFO: {e}")
 
     def debug(self, e, cls):
+        logging.setBasicConfig(filename=log_file)
         Logger = logging.getLogger(cls)
         Logger.setLevel(logging.DEBUG)
         Logger.debug(f"Date: {date} DEBUG: {e}")
 
     def warning(self, e, cls):
+        logging.setBasicConfig(filename=log_file)
         Logger = logging.getLogger(cls)
         Logger.setLevel(logging.WARNING)
         Logger.warning(f"Date: {date} WARNING: {e}")
