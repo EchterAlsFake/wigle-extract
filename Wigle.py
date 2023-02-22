@@ -1,4 +1,5 @@
 import logging
+import chardet
 
 from colorama import *
 import configparser, sys, datetime
@@ -9,25 +10,25 @@ log_file = "logs.log"
 class Logger():
 
     def error(self, e, cls):
-        logging.setBasicConfig(filename=log_file)
+        logging.basicConfig(filename=log_file)
         Logger = logging.getLogger(cls)
         Logger.setLevel(logging.ERROR)
-        Logger.error(f"Dare: {date}e ERROR: {e}")
+        Logger.error(f"Date: {date}e ERROR: {e}")
 
     def info(self, e, cls):
-        logging.setBasicConfig(filename=log_file)
+        logging.basicConfig(filename=log_file)
         Logger = logging.getLogger(cls)
         Logger.setLevel(logging.INFO)
         Logger.info(f"Date: {date} INFO: {e}")
 
     def debug(self, e, cls):
-        logging.setBasicConfig(filename=log_file)
+        logging.basicConfig(filename=log_file)
         Logger = logging.getLogger(cls)
         Logger.setLevel(logging.DEBUG)
         Logger.debug(f"Date: {date} DEBUG: {e}")
 
     def warning(self, e, cls):
-        logging.setBasicConfig(filename=log_file)
+        logging.basicConfig(filename=log_file)
         Logger = logging.getLogger(cls)
         Logger.setLevel(logging.WARNING)
         Logger.warning(f"Date: {date} WARNING: {e}")
@@ -40,17 +41,17 @@ class Configure(Logger):
         self.conf.read("config.ini")
         try:
             self.variables()
-            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTMAGENTA_EX + "Variables loaded...")
+            print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTMAGENTA_EX + "Variables loaded...")
         except Exception as e:
-            print(Fore.LIGHTRED_EX + "[!] " + Fore.LIGHTMAGENTA_EX + "Error: " + str(e))
+            print(Fore.LIGHTRED_EX + "[!]" + Fore.LIGHTMAGENTA_EX + "Error: " + str(e))
             self.error(e, cls="Configure . __init__(): ")
             sys.exit()
         self.get_language()
 
         if self.language == "Deutsch":
-            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTYELLOW_EX + "Konfiguration abgeschlossen!")
+            print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTYELLOW_EX + "Konfiguration abgeschlossen!")
         elif self.language == "English":
-            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTYELLOW_EX + "Configuration successful!")
+            print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTYELLOW_EX + "Configuration successful!")
 
     def get_language(self):
 
@@ -125,7 +126,7 @@ Ich möchte nicht, dass du gezielt nach W-LAN Netzwerken suchst, welche eine Sch
 wie du dieses Programm nutzt. Ich bin nur der Programmierer, du bist der Benutzer und ich bin in keiner Weise haftbar für
 Schäden die durch die Benutzung des Programmes entstehen!
 
-Das Programm funktioniert ohne Internet und sammelt keine Daten. Ich bin für Privatsphäre und möchte niemanden
+Das Programm funktioniert ohne Internet und sammelt keine Daten (Außer den Logs). Ich bin für Privatsphäre und möchte niemanden
 zwingen irgendwelche 'Diagnosedaten' hochzuladen.  Solltest du Fehler usw. bekommen, dann kannst du auf die obrige Seite gehen
 und dort in der Sektion 'Issues' einen Fehler melden. Andernfalls kannst du den Fehler auch an meine E-Mail senden:
 
@@ -160,11 +161,23 @@ you can go to the above-mentioned page and report the issue in the 'Issues' sect
 
 EchterAlsFake@proton.me
 
-I have read and agree to the terms.
-I have read and do not agree to the terms.
+1) I have read and agree to the terms.
+2) I have read and do not agree to the terms.
 ----------------------------------------------------=>
 
 """)
+        if agb == "1":
+            with open("config.ini", 'w') as ConfigFile:
+                self.conf.set("AGB", 'accept', 'true')
+                self.conf.write(ConfigFile)
+
+        elif agb == "2":
+            with open("config.ini", 'w') as ConfigFile:
+                self.conf.set("AGB", 'accept', 'false')
+                self.conf.write(ConfigFile)
+
+        else:
+            print("Wrong number.  Please choose between 1 and 2")
 
     def variables(self):
 
@@ -315,9 +328,9 @@ class Wigle_German(Configure):
                     print("Wrong number.  Please choose between 1 and 5")
 
     def vulnerability_search(self):
-        with open(self.file, 'r') as csv_file:
+        with open(self.file, 'r', encoding="utf-8", errors="replace") as csv_file:
             print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Daten werden ausgewertet....")
-            text = csv_file.read().encode("utf-8").splitlines()
+            text = csv_file.read().splitlines()
             for line in text:
                 if ",," in str(line):
                     pass
@@ -425,7 +438,7 @@ class Wigle_German(Configure):
     def show_wep(self):
 
         for line in self.wep_list:
-            values = line.decode().strip().split(",")
+            values = line.strip().split(",")
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -444,7 +457,7 @@ class Wigle_German(Configure):
         for line in self.wpa_list:
             # Help from ChatGPT in this part of code.
 
-            values = line.decode().strip().split(",")
+            values = line.strip().split(",")
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -460,7 +473,7 @@ class Wigle_German(Configure):
     def show_o2(self):
 
         for line in self.o2_list:
-            values = line.decode().strip().split(",")
+            values = line.strip().split(",")
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -475,7 +488,7 @@ class Wigle_German(Configure):
 
     def show_tp_link(self):
         for line in self.tp_link_list:
-            values = line.decode().strip().split(",")
+            values = line.strip().split(",")
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -608,6 +621,7 @@ class Wigle_English(Configure):
         elif menu_input == "4":
             self.file = input(
                 Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTMAGENTA_EX + "Please enter the path to the CSV file: ")
+            self.menu()
 
         elif menu_input == "5":
             exit()
@@ -682,9 +696,11 @@ class Wigle_English(Configure):
                     print("Wrong number.  Please choose between 1 and 5")
 
     def vulnerability_search(self):
-        with open(self.file, 'r') as csv_file:
+
+
+        with open(self.file, 'r', encoding="utf-8", errors="replace") as csv_file:
             print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Analyzing data....")
-            text = csv_file.read().encode("utf-8").splitlines()
+            text = csv_file.read().splitlines()
             for line in text:
                 if ",," in str(line):
                     pass
