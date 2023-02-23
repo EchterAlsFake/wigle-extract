@@ -1,6 +1,4 @@
 import logging
-import chardet
-
 from colorama import *
 import configparser, sys, datetime
 
@@ -60,11 +58,12 @@ class Configure(Logger):
 
         elif self.conf['Language']['german'] == 'true':
             self.language = "Deutsch"
-            print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTBLUE_EX + "Sprache: Deutsch")
+            print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTBLUE_EX + "Sprache: Deutsch")
             self.configure_german()
 
         elif self.conf['Language']['english'] == 'true':
             self.language = "English"
+            print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTBLUE_EX + "Language: English")
             self.configure_english()
 
     def set_language(self):
@@ -100,7 +99,7 @@ Please select your language:
         if self.conf['AGB']['accept'] == 'false':
             self.agb_german()
 
-        self.file = input(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Bitte gib den Pfad zur CSV Datei ein: ")
+        self.file = input(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTCYAN_EX + "Bitte gib den Pfad zur CSV Datei ein: ")
         self.date = datetime.datetime.now()
 
     def configure_english(self):
@@ -273,40 +272,48 @@ class Wigle_German(Configure):
                 if self.wep:
                     self.conf.set("WEP", 'wep', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
                 elif not self.wep:
                     self.conf.set("WEP", 'wep', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
             elif setting == "2":
 
                 if self.wpa:
                     self.conf.set("WPA", 'tkip', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
                 elif not self.wpa:
                     self.conf.set("WPA", 'tkip', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
             elif setting == "3":
 
                 if self.wps_o2:
                     self.conf.set("WPS", 'o2', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
                 elif not self.wps_o2:
                     self.conf.set("WPS", 'o2', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
             elif setting == "4":
 
                 if self.wps_tp_link:
                     self.conf.set("WPS", 'tp_link', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
                 elif not self.wps_tp_link:
                     self.conf.set("WPS", 'tp_link', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
             elif setting == "5":
 
@@ -315,6 +322,7 @@ class Wigle_German(Configure):
                     self.conf.set("Language", 'german', 'false')
                     self.conf.set("Language", 'english', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
                     self.configure_german()
 
                 elif self.language == "English":
@@ -322,6 +330,7 @@ class Wigle_German(Configure):
                     self.conf.set("Language", 'german', 'true')
                     self.conf.set("Language", 'english', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
                     self.configure_english()
 
                 else:
@@ -643,40 +652,48 @@ class Wigle_English(Configure):
                 if self.wep:
                     self.conf.set("WEP", 'wep', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
                 elif not self.wep:
                     self.conf.set("WEP", 'wep', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
             elif setting == "2":
 
                 if self.wpa:
                     self.conf.set("WPA", 'tkip', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
                 elif not self.wpa:
                     self.conf.set("WPA", 'tkip', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
             elif setting == "3":
 
                 if self.wps_o2:
                     self.conf.set("WPS", 'o2', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
                 elif not self.wps_o2:
                     self.conf.set("WPS", 'o2', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
             elif setting == "4":
 
                 if self.wps_tp_link:
                     self.conf.set("WPS", 'tp_link', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
                 elif not self.wps_tp_link:
                     self.conf.set("WPS", 'tp_link', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
 
             elif setting == "5":
 
@@ -685,12 +702,16 @@ class Wigle_English(Configure):
                     self.conf.set("Language", 'german', 'false')
                     self.conf.set("Language", 'english', 'true')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
+                    self.configure_german()
 
                 elif self.language == "English":
 
                     self.conf.set("Language", 'german', 'true')
                     self.conf.set("Language", 'english', 'false')
                     self.conf.write(ConfigFile)
+                    print(Fore.LIGHTGREEN_EX + "[+]" + "✓")
+                    self.configure_english()
 
                 else:
                     print("Wrong number.  Please choose between 1 and 5")
