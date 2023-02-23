@@ -1,4 +1,6 @@
 import logging
+from re import split
+
 from colorama import *
 import configparser, sys, datetime
 
@@ -40,15 +42,20 @@ class Configure(Logger):
         try:
             self.variables()
             print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTMAGENTA_EX + "Variables loaded...")
+
         except Exception as e:
+
             print(Fore.LIGHTRED_EX + "[!]" + Fore.LIGHTMAGENTA_EX + "Error: " + str(e))
             self.error(e, cls="Configure . __init__(): ")
             sys.exit()
+
         self.get_language()
 
         if self.language == "Deutsch":
             print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTYELLOW_EX + "Konfiguration abgeschlossen!")
+
         elif self.language == "English":
+
             print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTYELLOW_EX + "Configuration successful!")
 
     def get_language(self):
@@ -138,14 +145,16 @@ EchterAlsFake@proton.me
             with open("config.ini", 'w') as ConfigFile:
                 self.conf.set("AGB", 'accept', 'true')
                 self.conf.write(ConfigFile)
+                print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTCYAN_EX +"✓")
 
         elif agb == "2":
+
             with open("config.ini", 'w') as ConfigFile:
                 self.conf.set("AGB", 'accept', 'false')
                 self.conf.write(ConfigFile)
-
+                print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTCYAN_EX + "✓")
         else:
-            print("Wrong number.  Please choose between 1 and 2")
+            print(Fore.LIGHTRED_EX + "[!]" + "Wrong number.  Please choose between 1 and 2")
 
     def agb_english(self):
         agb = input("""
@@ -169,14 +178,17 @@ EchterAlsFake@proton.me
             with open("config.ini", 'w') as ConfigFile:
                 self.conf.set("AGB", 'accept', 'true')
                 self.conf.write(ConfigFile)
+                print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTCYAN_EX + "✓")
 
         elif agb == "2":
             with open("config.ini", 'w') as ConfigFile:
                 self.conf.set("AGB", 'accept', 'false')
                 self.conf.write(ConfigFile)
+                print(Fore.LIGHTGREEN_EX + "[+]" + Fore.LIGHTCYAN_EX + "✓")
 
         else:
-            print("Wrong number.  Please choose between 1 and 2")
+            print(Fore.LIGHTRED_EX + "[!]" + "Wrong number.  Please choose between 1 and 2")
+            self.agb_english()
 
     def variables(self):
 
@@ -372,11 +384,11 @@ class Wigle_German(Configure):
                         self.wpa_list.append(line)
 
     def get_results(self):
-
-        self.wep_length = len(self.wep_list)
-        self.o2_length = len(self.o2_list)
-        self.tp_link_length = len(self.tp_link_list)
-        self.wpa_length = len(self.wpa_list)
+        self.clear_lists()
+        self.wep_length = len(self.cleared_wep_list)
+        self.o2_length = len(self.cleared_o2_list)
+        self.tp_link_length = len(self.cleared_tp_link_list)
+        self.wpa_length = len(self.cleared_wpa_list)
         self.all_length = self.wep_length + self.o2_length + self.tp_link_length + self.wpa_length
 
     def show_results(self):
@@ -444,10 +456,51 @@ class Wigle_German(Configure):
         elif self.showing == "5":
             self.menu()
 
-    def show_wep(self):
+    def clear_lists(self):
+        self.cleared_wep_list = {}
+        self.cleared_o2_list = {}
+        self.cleared_tp_link_list = {}
+        self.cleared_wpa_list = {}
 
-        for line in self.wep_list:
-            values = line.strip().split(",")
+        for item in self.wep_list:
+            values = item.split(",")
+            mac = values[0]
+            if mac not in self.cleared_wep_list:
+                self.cleared_wep_list[mac] = values
+
+            else:
+                pass
+
+        for item in self.o2_list:
+            values = item.split(",")
+            mac = values[0]
+            if mac not in self.cleared_o2_list:
+                self.cleared_o2_list[mac] = values
+
+            else:
+                pass
+
+        for item in self.tp_link_list:
+            values = item.split(",")
+            mac = values[0]
+            if mac not in self.cleared_tp_link_list:
+                self.cleared_tp_link_list[mac] = values
+
+            else:
+                pass
+
+        for item in self.wpa_list:
+            values = item.split(",")
+            mac = values[0]
+            if mac not in self.cleared_wpa_list:
+                self.cleared_wpa_list[mac] = values
+
+            else:
+                pass
+
+    def show_wep(self):
+        for mac in self.cleared_wep_list:
+            values = self.cleared_wep_list[mac]
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -463,10 +516,10 @@ class Wigle_German(Configure):
 
     def show_wpa(self):
 
-        for line in self.wpa_list:
+        for mac in self.wpa_list:
             # Help from ChatGPT in this part of code.
 
-            values = line.strip().split(",")
+            values = self.cleared_wpa_list[mac]
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -481,8 +534,8 @@ class Wigle_German(Configure):
 
     def show_o2(self):
 
-        for line in self.o2_list:
-            values = line.strip().split(",")
+        for mac in self.o2_list:
+            values = self.cleared_o2_list[name]
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -496,8 +549,8 @@ class Wigle_German(Configure):
         self.showing_input()
 
     def show_tp_link(self):
-        for line in self.tp_link_list:
-            values = line.strip().split(",")
+        for mac in self.tp_link_list:
+            values = self.cleared_tp_link_list[mac]
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -605,6 +658,40 @@ class Wigle_English(Configure):
         self.tp_link_list = []
         self.o2_list = []
         self.menu()
+
+    def clear_lists(self):
+        self.cleared_o2_list = []
+        self.cleared_tp_link_list = []
+        self.cleared_wep_list = []
+        self.cleared_wpa_list = []
+
+        for line in self.wep_list:
+            values = line.strip().split(",")
+            name = values[1]
+
+            if name not in self.cleared_wep_list:
+                self.cleared_wep_list.append(name)
+
+        for line in self.o2_list:
+            values = line.strip().split(",")
+            name = values[1]
+
+            if name not in self.cleared_o2_list:
+                self.cleared_o2_list.append(name)
+
+        for line in self.tp_link_list:
+            values = line.strip().split(",")
+            name = values[1]
+
+            if name not in self.cleared_tp_link_list:
+                self.cleared_tp_link_list.append(name)
+
+        for line in self.wpa_list:
+            values = line.strip().split(",")
+            name = values[1]
+
+            if name not in self.cleared_wpa_list:
+                self.cleared_wpa_list.append(name)
 
     def menu(self):
 
@@ -753,12 +840,55 @@ class Wigle_English(Configure):
                     elif "WPA-PSK-TKIP" in str(line):
                         self.wpa_list.append(line)
 
+    def clear_lists(self):
+        self.cleared_wep_list = {}
+        self.cleared_o2_list = {}
+        self.cleared_tp_link_list = {}
+        self.cleared_wpa_list = {}
+
+        for item in self.wep_list:
+            values = item.split(",")
+            mac = values[0]
+            if mac not in self.cleared_wep_list:
+                self.cleared_wep_list[mac] = values
+
+            else:
+                pass
+
+        for item in self.o2_list:
+            values = item.split(",")
+            mac = values[0]
+            if mac not in self.cleared_o2_list:
+                self.cleared_o2_list[mac] = values
+
+            else:
+                pass
+
+        for item in self.tp_link_list:
+            values = item.split(",")
+            mac = values[0]
+            if mac not in self.cleared_tp_link_list:
+                self.cleared_tp_link_list[mac] = values
+
+            else:
+                pass
+
+        for item in self.wpa_list:
+            values = item.split(",")
+            mac = values[0]
+            if mac not in self.cleared_wpa_list:
+                self.cleared_wpa_list[mac] = values
+
+            else:
+                pass
+
     def get_results(self):
 
-        self.wep_length = len(self.wep_list)
-        self.o2_length = len(self.o2_list)
-        self.tp_link_length = len(self.tp_link_list)
-        self.wpa_length = len(self.wpa_list)
+        self.clear_lists()
+        self.wep_length = len(self.cleared_wep_list)
+        self.o2_length = len(self.cleared_o2_list)
+        self.tp_link_length = len(self.cleared_tp_link_list)
+        self.wpa_length = len(self.cleared_wpa_list)
         self.all_length = self.wep_length + self.o2_length + self.tp_link_length + self.wpa_length
 
     def show_results(self):
@@ -828,8 +958,8 @@ class Wigle_English(Configure):
 
     def show_wep(self):
 
-        for line in self.wep_list:
-            values = line.decode().strip().split(",")
+        for mac in self.cleared_wep_list:
+            values = self.cleared_wep_list[mac]
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -845,10 +975,10 @@ class Wigle_English(Configure):
 
     def show_wpa(self):
 
-        for line in self.wpa_list:
+        for mac in self.cleared_wpa_list:
             # Help from ChatGPT in this part of code.
 
-            values = line.decode().strip().split(",")
+            values = self.cleared_wpa_list[mac]
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -863,8 +993,8 @@ class Wigle_English(Configure):
 
     def show_o2(self):
 
-        for line in self.o2_list:
-            values = line.decode().strip().split(",")
+        for mac in self.cleared_o2_list:
+            values = self.cleared_o2_list[mac]
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -878,8 +1008,8 @@ class Wigle_English(Configure):
         self.showing_input()
 
     def show_tp_link(self):
-        for line in self.tp_link_list:
-            values = line.decode().strip().split(",")
+        for mac in self.cleared_tp_link_list:
+            values = self.cleared_tp_link_list[mac]
             mac = values[0]
             name = values[1]
             gps_latitude = values[6]
@@ -1004,7 +1134,7 @@ if __name__ == "__main__":
 
     except KeyError as e:
         print(
-            f"{Fore.LIGHTRED_EX}[!] {Fore.LIGHTWHITE_EX}  Unhandled Key Error:  Probably some issues with the configuration file.  Please check the file and try again.")
+            f"{Fore.LIGHTRED_EX}[!] {Fore.LIGHTWHITE_EX} Unhandled Key Error:  Probably some issues with the configuration file.  Please check the file and try again.")
         Logger().error(cls="__main__", e=e)
 
     except FileNotFoundError as e:
@@ -1013,5 +1143,11 @@ if __name__ == "__main__":
         Logger().error(cls="__main__", e=e)
 
     except Exception as e:
-        print(f"{Fore.LIGHTRED_EX}[!] {Fore.LIGHTWHITE_EX} Unknown Exception occured. Please report the Log Files to GitHub or send them via E-Mail.  Thanks :) ")
-        Logger().error(cls="__main__", e=e)
+        if Exception == "Configure' object has no attribute 'language":
+            Configure()
+        else:
+
+            print(f"{Fore.LIGHTRED_EX}[!] {Fore.LIGHTWHITE_EX} Unknown Exception occured. Please report the Log Files to GitHub or send them via E-Mail.  Thanks :) ")
+            Logger().error(cls="__main__", e=e)
+
+
