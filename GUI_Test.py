@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import configparser
 
+
+
 # Form implementation generated from reading ui file 'untitled.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
@@ -12,12 +14,12 @@ import configparser
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys, qdarkstyle, os
 from colorama import Fore
-from PyQt5.QtCore import QFile, QTextStream
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QApplication, QScrollArea, QTableWidget, QTableWidgetItem
 
 
 
-class Ui_MainWindow(QtWidgets.QMainWindow):
+
+class Ui_MainWindow(QtWidgets.QWidget):
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
         self.wep_list = []
@@ -25,6 +27,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.tp_link_list = []
         self.o2_list = []
         self.conf = configparser.ConfigParser()
+        self.conf.read("config.ini")
         self.variables()
         self.setupUi(self)
 
@@ -104,6 +107,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         with open(self.csv_path, 'r', encoding="utf-8", errors="replace") as csv_file:
             print(Fore.LIGHTGREEN_EX + "[+] " + Fore.LIGHTCYAN_EX + "Analyzing data....")
+            self.progressBar.setValue(0)
             text = csv_file.read().splitlines()
             for line in text:
                 if ",," in str(line):
@@ -135,12 +139,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                     elif "WPA-PSK-TKIP" in str(line):
                         self.wpa_list.append(line)
+            self.progressBar.setValue(33)
+
 
     def clear_lists(self):
         self.cleared_wep_list = {}
+        self.progressBar.setValue(40)
         self.cleared_o2_list = {}
+        self.progressBar.setValue(45)
         self.cleared_tp_link_list = {}
+        self.progressBar.setValue(50)
         self.cleared_wpa_list = {}
+        self.progressBar.setValue(55)
 
         for item in self.wep_list:
             values = item.split(",")
@@ -178,6 +188,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             else:
                 pass
 
+        self.progressBar.setValue(80)
     def get_results(self):
 
         self.clear_lists()
@@ -186,7 +197,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.tp_link_length = len(self.cleared_tp_link_list)
         self.wpa_length = len(self.cleared_wpa_list)
         self.all_length = self.wep_length + self.o2_length + self.tp_link_length + self.wpa_length
-
+        self.progressBar.setValue(100)
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -324,16 +335,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.csv_button.setGeometry(QtCore.QRect(440, 30, 481, 27))
         self.csv_button.setObjectName("csv_input_button")
         self.csv_button.setText("Choose CSV File...")
-        MainWindow.setCentralWidget(self.centralwidget)
+        self.progressBar.setValue(0)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1920, 24))
         self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setEnabled(True)
         self.statusbar.setObjectName("statusbar")
-
-        MainWindow.setStatusBar(self.statusbar)
         self.show()
 
         self.retranslateUi(MainWindow)
@@ -349,13 +357,36 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
          #   self.QMessageBox.warning(self, "Warning", "Please choose a valid CSV file")
 
         self.vulnerability_search()
-        self.get_results()
         self.clear_lists()
+        self.get_results()
+        self.show_results()
 
 
     def show_results(self):
+        # ChatGPT literally coded this whole function xD
 
-          self.WEP_Scroll_Area
+        table = QTableWidget()
+        table.setRowCount(len(self.cleared_wep_list))
+        table.setColumnCount(4)
+        table.setHorizontalHeaderLabels(["MAC", "Name", "Latitude", "Longitude"])
+        row = 0
+        for mac in self.cleared_wep_list:
+            values = self.cleared_wep_list[mac]
+            mac = values[0]
+            name = values[1]
+            gps_latitude = values[6]
+            gps_longitude = values[7]
+            table.setItem(row, 0, QTableWidgetItem(mac))
+            table.setItem(row, 1, QTableWidgetItem(name))
+            table.setItem(row, 2, QTableWidgetItem(gps_latitude))
+            table.setItem(row, 3, QTableWidgetItem(gps_longitude))
+
+            row += 1
+
+        table.resizeColumnsToContents()
+        self.WEP_Scroll_Area.setWidget(table)
+        self.WEP_Scroll_Area.setGeometry(10, 190, 991, 141)
+        self.WEP_Scroll_Area.show()
 
 
     def take_inputs(self):
@@ -363,6 +394,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.csv_path, done = QtWidgets.QInputDialog.getText(
             self, "CSV File", "Enter the path to csv file: "
         )
+
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
