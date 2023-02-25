@@ -2,7 +2,7 @@ import logging
 from re import split
 
 from colorama import *
-import configparser, sys, datetime
+import configparser, sys, datetime, logging
 
 date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 log_file = "logs.log"
