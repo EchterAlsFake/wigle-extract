@@ -12,7 +12,7 @@ To do's
 6) Make a search function for specific network names
 
 
-If you have any ideas, just makee an Issue tab and write whatever you want ;)
+If you have any ideas, just make an Issue tab and write whatever you want ;)
 
 Wigle-Extract is a program that can interact with
 the CSV files from wigle. It scans for weak secured 
